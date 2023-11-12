@@ -7,3 +7,6 @@ env.read_env()
 BOT_TOKEN = env.str("BOT_TOKEN")
 ADMINS = env.list("ADMINS")
 IP = env.str("IP")
+
+DATABASE_URL = "postgresql+asyncpg://postgres:1@localhost/oqtepalavash_bot"
+SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:1@localhost/oqtepalavash_bot"
