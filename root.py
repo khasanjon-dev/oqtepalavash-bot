@@ -28,6 +28,7 @@ class BotConfig:
 
     token: str = os.getenv('BOT_TOKEN')
     base_path: str = os.getenv('BASE_PATH')
+    BASE_URL: str = os.getenv('BASE_URL')
 
 
 @dataclass
@@ -41,4 +42,8 @@ class Configuration:
     bot = BotConfig()
 
 
-settings = Configuration()
+class Settings(Configuration):
+    base_url: str = os.getenv('BASE_URL')
+
+
+settings = Settings()

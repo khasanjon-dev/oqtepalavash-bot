@@ -11,6 +11,7 @@ aiogram = "^3.2.0"
 python-dotenv = "^1.0.0"
 redis = "^5.0.1"
 ujson = "^5.8.0"
+httpx = "^0.25.2"
 
 [tool.poetry.group.dev.dependencies]
 setuptools = "^69.0.2"
