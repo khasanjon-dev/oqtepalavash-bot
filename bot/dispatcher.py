@@ -7,13 +7,13 @@ from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.fsm.strategy import FSMStrategy
 from redis.asyncio.client import Redis
 
-from src.configuration import conf
+from root import settings
 
 from .logic import routers
 
 
 def get_redis_storage(
-    redis: Redis, state_ttl=conf.redis.state_ttl, data_ttl=conf.redis.data_ttl
+    redis: Redis, state_ttl=settings.redis.state_ttl, data_ttl=settings.redis.data_ttl
 ):
     """This function create redis storage or get it forcely from configuration.
 
