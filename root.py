@@ -27,6 +27,7 @@ class BotConfig:
     """Bot configuration."""
 
     token: str = os.getenv('BOT_TOKEN')
+    base_path: str = os.getenv('BASE_PATH')
 
 
 @dataclass
