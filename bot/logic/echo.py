@@ -3,7 +3,7 @@ from random import randint
 from aiogram import F
 from aiogram import Router, types
 from aiogram.types import InlineKeyboardButton
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder, KeyboardBuilder
 
 echo_router = Router(name='echo')
 
