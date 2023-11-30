@@ -7,12 +7,15 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-aiogram = "^3.1.1"
-environs = "^9.5.0"
-isort = "^5.12.0"
+aiogram = "^3.2.0"
+python-dotenv = "^1.0.0"
+redis = "^5.0.1"
 sqlalchemy = "^2.0.23"
 asyncpg = "^0.29.0"
-psycopg2-binary = "^2.9.9"
+alembic = "^1.12.1"
+
+[tool.poetry.group.dev.dependencies]
+setuptools = "^69.0.2"
 
 [tool.isort]
 skip = "__init__.py"
