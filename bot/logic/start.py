@@ -37,6 +37,7 @@ async def city_handler(message: types.Message, state: FSMContext) -> None:
         await update_or_create_user(context)
         await state.set_state(states.phone)
         await phone_handler(message, state)
+        return
     else:
         await state.set_state(states.language)
         await language_handler(message, state)
@@ -56,6 +57,7 @@ async def language_handler(message: types.Message, state: FSMContext) -> None:
         await update_or_create_user(context)
         await state.set_state(states.city)
         await city_handler(message, state)
+        return
     else:
         await state.set_state(states.start)
         await start_handler(message, state)
@@ -68,6 +70,7 @@ async def start_handler(message: types.Message, state: FSMContext) -> None:
     if message.text in data['languages']:
         await state.set_state(states.language)
         await language_handler(message, state)
+        return
     else:
         await state.set_state(states.start)
         reply_markup = await keyboard_builder(data['languages'], [1])
