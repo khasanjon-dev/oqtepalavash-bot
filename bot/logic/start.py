@@ -11,7 +11,7 @@ from bot.utils.states import states
 
 router = Router(name='start')
 
-
+# TODO solve the recoursion action
 @router.message(states.phone)
 async def phone_handler(message: types.Message, state: FSMContext) -> None:
     if message.content_type == types.ContentType.CONTACT:
