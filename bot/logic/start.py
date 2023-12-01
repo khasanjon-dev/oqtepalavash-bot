@@ -15,7 +15,7 @@ language_router = Router(name='language')
 city_router = Router(name='city')
 
 
-@language_router.message( CommandStart())
+@language_router.message(CommandStart())
 async def language_handler(message: types.Message, state: FSMContext) -> None:
     user = await get_or_create_user({
         'telegram_id': message.from_user.id
