@@ -3,25 +3,25 @@ import asyncio
 import logging
 
 from aiogram import Bot
-from redis.asyncio.client import Redis
+from aiogram.fsm.storage.memory import MemoryStorage
 
-from bot.dispatcher import get_dispatcher, get_redis_storage
+from bot.dispatcher import get_dispatcher
 from root import settings
 
 
 async def start_bot():
     """This function will start bot with polling mode."""
     bot = Bot(token=settings.bot.token)
-    storage = get_redis_storage(
-        redis=Redis(
-            db=settings.redis.db,
-            host=settings.redis.host,
-            password=settings.redis.passwd,
-            username=settings.redis.username,
-            port=settings.redis.port,
-        )
-    )
-    dp = get_dispatcher(storage=storage)
+    # storage = get_redis_storage(
+    #     redis=Redis(
+    #         db=settings.redis.db,
+    #         host=settings.redis.host,
+    #         password=settings.redis.passwd,
+    #         username=settings.redis.username,
+    #         port=settings.redis.port,
+    #     )
+    # )
+    dp = get_dispatcher(storage=MemoryStorage())
 
     await dp.start_polling(
         bot,
