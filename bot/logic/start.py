@@ -1,12 +1,8 @@
-"""This file represents a start logic."""
-
 from aiogram import Router, types
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 
-from bot.data.data import language
-from bot.requests.company import get_cities
-from bot.requests.users import get_or_create_user
+from bot.data import data
 from bot.utils.keyboardbuilder import keyboard_builder
 from bot.utils.states import states
 
@@ -17,11 +13,9 @@ city_router = Router(name='city')
 
 @language_router.message(CommandStart())
 async def language_handler(message: types.Message, state: FSMContext) -> None:
-    user = await get_or_create_user({
-        'telegram_id': message.from_user.id
-    })
     await state.set_state(states.language)
-    reply_markup = await keyboard_builder(language.items(), [1])
+    languages = data['languages']
+    reply_markup = await keyboard_builder(languages, [1])
     user = message.from_user
     first_message = (f"Assalomu alaykum {user.first_name}. Men Oqtepa Lavash yetkazib berish xizmati botiman!\n"
                      f"Привет {user.first_name}! Я бот службы доставки Oqtepa Lavash!\n"
@@ -37,13 +31,9 @@ async def language_handler(message: types.Message, state: FSMContext) -> None:
 
 @language_router.message(states.language)
 async def language_handler(message: types.Message, state: FSMContext) -> None:
-    if message.text in language.values():
-        await get_or_create_user({
-            'telegram_id': message.from_user.id,
-            'language': message.text
-        })
+    languages = data['languages']
+    if message.text in languages:
         await state.set_state(states.city)
-
-    cities = await get_cities()
+    cities = data['cities']
     reply_markup = await keyboard_builder(cities, [2])
     await message.answer('Shaharni tanlang', reply_markup=reply_markup)
