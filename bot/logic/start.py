@@ -35,4 +35,3 @@ async def language_handler(message: types.Message, state: FSMContext) -> None:
     cities = data['cities']
     reply_markup = await keyboard_builder(cities, [2])
     await message.answer('Shaharni tanlang', reply_markup=reply_markup)
-
