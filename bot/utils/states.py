@@ -6,6 +6,7 @@ class States(StatesGroup):
     city = State()
     phone = State()
     confirm_code = State()
+    start = None
 
 
 states = States()

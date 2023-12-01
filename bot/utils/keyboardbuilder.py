@@ -4,7 +4,11 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 async def keyboard_builder(messages: list, sizes: list | None = None):
     builder = ReplyKeyboardBuilder()
-    for message in messages:
+    for key, message in messages:
         builder.add(KeyboardButton(text=message))
     builder.adjust(*sizes)
     return builder.as_markup(resize_keyboard=True)
+
+
+async def keyboard_builder_api() -> None:
+    pass
