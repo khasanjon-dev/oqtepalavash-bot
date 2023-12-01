@@ -1,23 +1,40 @@
-from typing import Any
-
-from aiogram import Router, types, html
-from aiogram.filters import Command
+from aiogram import Router, types
+from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
-from aiogram.types import KeyboardButton, ReplyKeyboardRemove
+from aiogram.types import KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 from bot.data import data
+from bot.requests.user import get_or_create_user
 from bot.utils.keyboardbuilder import keyboard_builder
 from bot.utils.states import states
 
 router = Router(name='start')
 
 
-@router.message(Command(commands=['start']))
+@router.message(states.start, Command(commands=['start']))
 async def start_handler(message: types.Message, state: FSMContext) -> None:
     await state.set_state(states.language)
-    user =
-    # TODO  request to api
+    user = await get_or_create_user({
+        'telegram_id': message.from_user.id
+    })
+    if user['language']:
+        await state.set_state(states.city)
+        await language_handler()
+    else:
+        languages = data['languages']
+        reply_markup = await keyboard_builder(languages, [1])
+        text = (
+            "Muloqot tilini tanlang\n"
+            "Выберите язык\n"
+            "Select Language"
+        )
+        await message.answer(text, reply_markup=reply_markup)
+
+
+@router.message(CommandStart())
+async def first_start(message: types.Message, state: FSMContext) -> None:
+    await state.set_state(states.start)
     languages = data['languages']
     reply_markup = await keyboard_builder(languages, [1])
     user = message.from_user
@@ -56,4 +73,3 @@ async def city_handler(message: types.Message, state: FSMContext) -> None:
     button = KeyboardButton(text="📞Mening telefon raqamim", request_contact=True)
     markup = ReplyKeyboardBuilder().add(button).as_markup(resize_keyboard=True)
     await message.answer(text, data=date, reply_markup=markup)
-
