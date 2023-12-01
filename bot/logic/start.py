@@ -16,6 +16,8 @@ router = Router(name='start')
 @router.message(Command(commands=['start']))
 async def start_handler(message: types.Message, state: FSMContext) -> None:
     await state.set_state(states.language)
+    user =
+    # TODO  request to api
     languages = data['languages']
     reply_markup = await keyboard_builder(languages, [1])
     user = message.from_user
