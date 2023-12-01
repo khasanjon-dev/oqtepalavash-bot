@@ -6,12 +6,10 @@ from bot.data import data
 from bot.utils.keyboardbuilder import keyboard_builder
 from bot.utils.states import states
 
-start_router = Router(name='start')
-language_router = Router(name='language')
-city_router = Router(name='city')
+router = Router(name='start')
 
 
-@language_router.message(CommandStart())
+@router.message(CommandStart())
 async def language_handler(message: types.Message, state: FSMContext) -> None:
     await state.set_state(states.language)
     languages = data['languages']
@@ -29,7 +27,7 @@ async def language_handler(message: types.Message, state: FSMContext) -> None:
     await message.answer(second_message, reply_markup=reply_markup)
 
 
-@language_router.message(states.language)
+@router.message(states.language)
 async def language_handler(message: types.Message, state: FSMContext) -> None:
     languages = data['languages']
     if message.text in languages:
@@ -37,3 +35,4 @@ async def language_handler(message: types.Message, state: FSMContext) -> None:
     cities = data['cities']
     reply_markup = await keyboard_builder(cities, [2])
     await message.answer('Shaharni tanlang', reply_markup=reply_markup)
+

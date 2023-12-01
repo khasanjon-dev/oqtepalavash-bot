@@ -7,6 +7,6 @@ help_router = Router(name='help')
 
 
 @help_router.message(Command(commands='help'))
-async def help_handler(message: types.Message):
+async def help_handler(message: types.Message) -> None:
     """Help command handler."""
-    return await message.answer('Hi, world!')
+    await message.answer('Hi, world!')

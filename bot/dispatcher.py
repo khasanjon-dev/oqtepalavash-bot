@@ -7,7 +7,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.fsm.strategy import FSMStrategy
 from redis.asyncio.client import Redis
 
-from root import settings
+from bot.root import settings
 
 from .logic import routers
 
