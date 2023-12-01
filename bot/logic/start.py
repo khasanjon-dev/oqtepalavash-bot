@@ -3,6 +3,7 @@ from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
+from magic_filter import F
 
 from bot.data import data
 from bot.requests.user import get_or_create_user
@@ -18,9 +19,9 @@ async def start_handler(message: types.Message, state: FSMContext) -> None:
     user = await get_or_create_user({
         'telegram_id': message.from_user.id
     })
-    if user['language']:
+    if user.get('language', None):
         await state.set_state(states.city)
-        await language_handler()
+        await language_handler(message)
     else:
         languages = data['languages']
         reply_markup = await keyboard_builder(languages, [1])
@@ -29,6 +30,7 @@ async def start_handler(message: types.Message, state: FSMContext) -> None:
             "Выберите язык\n"
             "Select Language"
         )
+        await state.set_state(states.start)
         await message.answer(text, reply_markup=reply_markup)
 
 
@@ -50,9 +52,11 @@ async def first_start(message: types.Message, state: FSMContext) -> None:
     await message.answer(second_message, reply_markup=reply_markup)
 
 
-@router.message(states.language)
+languages = data['languages']
+
+
+@router.message(states.start, F.text in languages)
 async def language_handler(message: types.Message, state: FSMContext) -> None:
-    languages = data['languages']
     if message.text in languages:
         await state.update_data(language=message.text)
         await state.set_state(states.city)
