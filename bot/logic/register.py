@@ -1,29 +1,19 @@
 from aiogram import types, Router
-from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import KeyboardButton, ReplyKeyboardRemove
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 from bot.data import data
+from bot.logic.menu import menu_handler
 from bot.requests.user import update_or_create_user
 from bot.utils.keyboardbuilder import keyboard_builder
 from bot.utils.states import states
 
-router = Router()
+register = Router()
 
 
-@router.message(states.menu)
-async def menu_handler(message: types.Message, state: FSMContext) -> None:
-    text = (f"Buyurtma berishni boshlash uchun 🛒\n"
-            f"Buyurtma qilish tugmasini bosing\n\n"
-            f"Shuningdek, aksiyalarni ko'rishingiz va bizning filiallar bilan tanishishingiz mumkin\n\n"
-            f"<a href='https://telegra.ph/Taomnoma-09-30'>Oqtepa Lavash menu</a>")
-    await message.answer(text, parse_mode=ParseMode.HTML)
-    await state.clear()
-
-
-@router.message(states.phone)
+@register.message(states.phone)
 async def phone_handler(message: types.Message, state: FSMContext) -> None:
     if message.content_type == types.ContentType.CONTACT:
         context = {
@@ -41,7 +31,7 @@ async def phone_handler(message: types.Message, state: FSMContext) -> None:
         await message.answer(text, reply_markup=markup)
 
 
-@router.message(states.city)
+@register.message(states.city)
 async def city_handler(message: types.Message, state: FSMContext) -> None:
     if message.text in data['cities']:
         context = {
@@ -56,7 +46,7 @@ async def city_handler(message: types.Message, state: FSMContext) -> None:
         await message.answer('Shaharni tanlang', reply_markup=reply_markup)
 
 
-@router.message(states.language)
+@register.message(states.language)
 async def language_handler(message: types.Message, state: FSMContext) -> None:
     if message.text in data['languages']:
         context = {
@@ -78,7 +68,7 @@ async def language_handler(message: types.Message, state: FSMContext) -> None:
 
 #
 
-@router.message(CommandStart())
+@register.message(CommandStart())
 async def first_start_handler(message: types.Message, state: FSMContext) -> None:
     context = {
         'telegram_id': message.from_user.id
