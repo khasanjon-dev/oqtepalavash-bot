@@ -6,6 +6,7 @@ class States(StatesGroup):
     language = State()
     city = State()
     phone = State()
+    menu = State()
 
 
 states = States()
