@@ -8,12 +8,11 @@ from aiogram.fsm.strategy import FSMStrategy
 from redis.asyncio.client import Redis
 
 from root import settings
-
 from .logic import routers
 
 
 def get_redis_storage(
-    redis: Redis, state_ttl=settings.redis.state_ttl, data_ttl=settings.redis.data_ttl
+        redis: Redis, state_ttl=settings.redis.state_ttl, data_ttl=settings.redis.data_ttl
 ):
     """This function create redis storage or get it forcely from configuration.
 
@@ -28,9 +27,9 @@ def get_redis_storage(
 
 
 def get_dispatcher(
-    storage: BaseStorage = MemoryStorage(),
-    fsm_strategy: FSMStrategy | None = FSMStrategy.CHAT,
-    event_isolation: BaseEventIsolation | None = None,
+        storage: BaseStorage = MemoryStorage(),
+        fsm_strategy: FSMStrategy | None = FSMStrategy.CHAT,
+        event_isolation: BaseEventIsolation | None = None,
 ):
     """This function set up dispatcher with routers, filters and middlewares."""
     dp = Dispatcher(
