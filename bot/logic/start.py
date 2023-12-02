@@ -1,7 +1,7 @@
 from aiogram import Router, types
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
-from aiogram.types import KeyboardButton
+from aiogram.types import KeyboardButton, ReplyKeyboardRemove
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 from bot.data import data
@@ -10,7 +10,6 @@ from bot.utils.keyboardbuilder import keyboard_builder
 from bot.utils.states import states
 
 router = Router()
-
 
 
 @router.message(states.phone)
@@ -22,7 +21,7 @@ async def phone_handler(message: types.Message, state: FSMContext) -> None:
         }
         await update_or_create_user(context)
         await state.clear()
-        await message.answer('Registratsiya Jarayonidan ')
+        await message.answer("Registratsiya jarayonidan muvaffaqiyatli o'tdingiz!", reply_markup=ReplyKeyboardRemove())
     else:
         text = "Ro'yxatga olish uchun telefon raqamingizni yuboring!"
         button = KeyboardButton(text="📞Mening telefon raqamim", request_contact=True)
