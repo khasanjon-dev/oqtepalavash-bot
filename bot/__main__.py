@@ -6,6 +6,7 @@ from aiogram import Bot
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from bot.dispatcher import get_dispatcher
+from bot.utils.set_bot_commands import set_default_commands
 from root import settings
 
 
@@ -22,7 +23,7 @@ async def start_bot():
     #     )
     # )
     dp = get_dispatcher(storage=MemoryStorage())
-
+    await set_default_commands(bot)
     await dp.start_polling(
         bot,
         allowed_updates=dp.resolve_used_update_types()
