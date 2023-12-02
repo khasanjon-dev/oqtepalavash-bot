@@ -18,4 +18,3 @@ async def menu_handler(message: types.Message, state: FSMContext) -> None:
     markup = await inline_keyboard_builder(data['menus'], [1, 2, 1, 2])
     await message.answer(text, parse_mode=ParseMode.HTML, reply_markup=markup)
     await state.clear()
-
