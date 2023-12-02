@@ -9,10 +9,10 @@ from bot.requests.user import update_or_create_user
 from bot.utils.keyboardbuilder import keyboard_builder
 from bot.utils.states import states
 
-router = Router(name='start')
+router = Router()
 
 
-# TODO solve the recoursion action
+
 @router.message(states.phone)
 async def phone_handler(message: types.Message, state: FSMContext) -> None:
     if message.content_type == types.ContentType.CONTACT:
@@ -22,7 +22,7 @@ async def phone_handler(message: types.Message, state: FSMContext) -> None:
         }
         await update_or_create_user(context)
         await state.clear()
-        await message.answer('Welcome dear!')
+        await message.answer('Registratsiya Jarayonidan ')
     else:
         text = "Ro'yxatga olish uchun telefon raqamingizni yuboring!"
         button = KeyboardButton(text="📞Mening telefon raqamim", request_contact=True)
