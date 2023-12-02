@@ -1,19 +1,19 @@
 from aiogram import types, Router
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import KeyboardButton, ReplyKeyboardRemove
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 from bot.data import data
-from bot.logic.menu import menu_handler
+from bot.logic.menu import first_menu_handler
 from bot.requests.user import update_or_create_user
 from bot.utils.keyboardbuilder import keyboard_builder
-from bot.utils.states import states
+from bot.utils.states import register_states, menu_states
 
-register = Router()
+register_router = Router()
 
 
-@register.message(states.phone)
+@register_router.message(register_states.phone)
 async def phone_handler(message: types.Message, state: FSMContext) -> None:
     if message.content_type == types.ContentType.CONTACT:
         context = {
@@ -22,8 +22,8 @@ async def phone_handler(message: types.Message, state: FSMContext) -> None:
         }
         await update_or_create_user(context)
         await message.answer("Registratsiya jarayonidan muvaffaqiyatli o'tdingiz!", reply_markup=ReplyKeyboardRemove())
-        await state.set_state(states.menu)
-        await menu_handler(message, state)
+        await state.set_state(menu_states.first_menu)
+        await first_menu_handler(message, state)
     else:
         text = "Ro'yxatga olish uchun telefon raqamingizni yuboring!"
         button = KeyboardButton(text="📞Mening telefon raqamim", request_contact=True)
@@ -31,7 +31,7 @@ async def phone_handler(message: types.Message, state: FSMContext) -> None:
         await message.answer(text, reply_markup=markup)
 
 
-@register.message(states.city)
+@register_router.message(register_states.city)
 async def city_handler(message: types.Message, state: FSMContext) -> None:
     if message.text in data['cities']:
         context = {
@@ -39,14 +39,14 @@ async def city_handler(message: types.Message, state: FSMContext) -> None:
             'city': message.text
         }
         await update_or_create_user(context)
-        await state.set_state(states.phone)
+        await state.set_state(register_states.phone)
         await phone_handler(message, state)
     else:
-        reply_markup = await keyboard_builder(data['cities'], [2])
+        reply_markup = keyboard_builder(data['cities'], [2])
         await message.answer('Shaharni tanlang', reply_markup=reply_markup)
 
 
-@register.message(states.language)
+@register_router.message(register_states.language)
 async def language_handler(message: types.Message, state: FSMContext) -> None:
     if message.text in data['languages']:
         context = {
@@ -54,10 +54,10 @@ async def language_handler(message: types.Message, state: FSMContext) -> None:
             'language': message.text
         }
         await update_or_create_user(context)
-        await state.set_state(states.city)
+        await state.set_state(register_states.city)
         await city_handler(message, state)
     else:
-        reply_markup = await keyboard_builder(data['languages'], [1])
+        reply_markup = keyboard_builder(data['languages'], [1])
         text = (
             "Muloqot tilini tanlang\n"
             "Выберите язык\n"
@@ -66,9 +66,7 @@ async def language_handler(message: types.Message, state: FSMContext) -> None:
         await message.answer(text, reply_markup=reply_markup)
 
 
-#
-
-@register.message(CommandStart())
+@register_router.message(StateFilter(None), CommandStart())
 async def first_start_handler(message: types.Message, state: FSMContext) -> None:
     context = {
         'telegram_id': message.from_user.id
@@ -79,5 +77,5 @@ async def first_start_handler(message: types.Message, state: FSMContext) -> None
             f"Привет {user.first_name}! Я бот службы доставки Oqtepa Lavash!\n"
             f"Hi {user.first_name}! I am Oqtepa Lavash delivery service bot!")
     await message.answer(text)
-    await state.set_state(states.language)
+    await state.set_state(register_states.language)
     await language_handler(message, state)
