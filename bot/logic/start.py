@@ -1,4 +1,5 @@
-from aiogram import Router, types
+from aiogram import types, Router
+from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import KeyboardButton, ReplyKeyboardRemove
@@ -12,6 +13,16 @@ from bot.utils.states import states
 router = Router()
 
 
+@router.message(states.menu)
+async def menu_handler(message: types.Message, state: FSMContext) -> None:
+    text = (f"Buyurtma berishni boshlash uchun 🛒\n"
+            f"Buyurtma qilish tugmasini bosing\n\n"
+            f"Shuningdek, aksiyalarni ko'rishingiz va bizning filiallar bilan tanishishingiz mumkin\n\n"
+            f"<a href='https://telegra.ph/Taomnoma-09-30'>Oqtepa Lavash menu</a>")
+    await message.answer(text, parse_mode=ParseMode.HTML)
+    await state.clear()
+
+
 @router.message(states.phone)
 async def phone_handler(message: types.Message, state: FSMContext) -> None:
     if message.content_type == types.ContentType.CONTACT:
@@ -20,8 +31,9 @@ async def phone_handler(message: types.Message, state: FSMContext) -> None:
             'phone': message.contact.phone_number
         }
         await update_or_create_user(context)
-        await state.clear()
         await message.answer("Registratsiya jarayonidan muvaffaqiyatli o'tdingiz!", reply_markup=ReplyKeyboardRemove())
+        await state.set_state(states.menu)
+        await menu_handler(message, state)
     else:
         text = "Ro'yxatga olish uchun telefon raqamingizni yuboring!"
         button = KeyboardButton(text="📞Mening telefon raqamim", request_contact=True)
