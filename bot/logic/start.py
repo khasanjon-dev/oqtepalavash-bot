@@ -21,11 +21,13 @@ async def phone_handler(message: types.Message, state: FSMContext) -> None:
             'phone': message.contact.phone_number
         }
         await update_or_create_user(context)
+        await state.clear()
+        await message.answer('Welcome dear!')
     else:
-        await state.set_state(states.city)
-        await city_handler(message, state)
-    await state.clear()
-    await message.answer(f'Xush kelibsiz {message.from_user.first_name}')
+        text = "Ro'yxatga olish uchun telefon raqamingizni yuboring!"
+        button = KeyboardButton(text="📞Mening telefon raqamim", request_contact=True)
+        markup = ReplyKeyboardBuilder().add(button).as_markup(resize_keyboard=True)
+        await message.answer(text, reply_markup=markup)
 
 
 @router.message(states.city)
@@ -38,14 +40,9 @@ async def city_handler(message: types.Message, state: FSMContext) -> None:
         await update_or_create_user(context)
         await state.set_state(states.phone)
         await phone_handler(message, state)
-        return
     else:
-        await state.set_state(states.language)
-        await language_handler(message, state)
-    text = "Ro'yxatga olish uchun telefon raqamingizni yuboring!"
-    button = KeyboardButton(text="📞Mening telefon raqamim", request_contact=True)
-    markup = ReplyKeyboardBuilder().add(button).as_markup(resize_keyboard=True)
-    await message.answer(text, reply_markup=markup)
+        reply_markup = await keyboard_builder(data['cities'], [2])
+        await message.answer('Shaharni tanlang', reply_markup=reply_markup)
 
 
 @router.message(states.language)
@@ -58,22 +55,7 @@ async def language_handler(message: types.Message, state: FSMContext) -> None:
         await update_or_create_user(context)
         await state.set_state(states.city)
         await city_handler(message, state)
-        return
     else:
-        await state.set_state(states.start)
-        await start_handler(message, state)
-    reply_markup = await keyboard_builder(data['cities'], [2])
-    await message.answer('Shaharni tanlang', reply_markup=reply_markup)
-
-
-@router.message(states.start)
-async def start_handler(message: types.Message, state: FSMContext) -> None:
-    if message.text in data['languages']:
-        await state.set_state(states.language)
-        await language_handler(message, state)
-        return
-    else:
-        await state.set_state(states.start)
         reply_markup = await keyboard_builder(data['languages'], [1])
         text = (
             "Muloqot tilini tanlang\n"
@@ -83,9 +65,10 @@ async def start_handler(message: types.Message, state: FSMContext) -> None:
         await message.answer(text, reply_markup=reply_markup)
 
 
+#
+
 @router.message(CommandStart())
 async def first_start_handler(message: types.Message, state: FSMContext) -> None:
-    await state.set_state(states.start)
     context = {
         'telegram_id': message.from_user.id
     }
@@ -95,4 +78,5 @@ async def first_start_handler(message: types.Message, state: FSMContext) -> None
             f"Привет {user.first_name}! Я бот службы доставки Oqtepa Lavash!\n"
             f"Hi {user.first_name}! I am Oqtepa Lavash delivery service bot!")
     await message.answer(text)
-    await start_handler(message, state)
+    await state.set_state(states.language)
+    await language_handler(message, state)
