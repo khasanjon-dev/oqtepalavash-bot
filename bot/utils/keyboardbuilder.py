@@ -2,7 +2,7 @@ from aiogram.types import KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
-async def keyboard_builder(messages: list, sizes: list | None = None):
+def keyboard_builder(messages: list, sizes: list | None = None):
     builder = ReplyKeyboardBuilder()
     for message in messages:
         builder.add(
