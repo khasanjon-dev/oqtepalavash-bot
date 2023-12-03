@@ -15,8 +15,8 @@ async def menu_message(message: types.Message) -> None:
 
 @menu_router.message(menu_states.first_menu)
 async def first_menu_handler(message: types.Message, state: FSMContext) -> None:
-    text = 'Quyidagilardan birini tanlang'
-    markup = inline_keyboard_builder(data['menus']['texts'], data['menus']['call_backs'], [1, 2, 1, 2])
+    text = 'Quyidagilardan birini tanlang 👇'
+    markup = inline_keyboard_builder(data['menu'].keys(), data['menu'].values(), [1, 2, 1, 2])
     await state.set_state(menu_states.menu)
     await message.answer(text, reply_markup=markup)
 
@@ -32,5 +32,5 @@ async def menu_handler(message: types.Message, state: FSMContext) -> None:
                 "Buyurtma qilish tugmasini bosing\n\n"
                 "Shuningdek, aksiyalarni ko'rishingiz va bizning filiallar bilan tanishishingiz mumkin\n\n"
                 "<a href='https://telegra.ph/Taomnoma-09-30'>Oqtepa Lavash menu</a>")
-        markup = inline_keyboard_builder(data['menus']['texts'], data['menus']['call_backs'], [1, 2, 1, 2])
+        markup = inline_keyboard_builder(data['menu'].keys(), data['menu'].values(), [1, 2, 1, 2])
         await message.answer(text, ParseMode.HTML, reply_markup=markup)
