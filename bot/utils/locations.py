@@ -8,6 +8,6 @@ def get_address(latitude: float, longitude: float) -> str:
     house_number = address.get('house_number', None)
     road = address.get('road', None)
     residential = address.get('residential', None)
-    city = address['city']
+    city = address.get('city', None)
     text = f"{city}, {residential}, {road}, {house_number}"
     return text
