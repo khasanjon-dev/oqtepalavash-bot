@@ -38,13 +38,15 @@ async def menu_handler(message: types.Message, state: FSMContext) -> None:
         await message.answer(text, ParseMode.HTML, reply_markup=markup)
 
 
+chat_ids = {}
+
+
 @menu_router.message(menu_states.main_menu)
 async def main_menu_handler(msg: types.Message, state: FSMContext):
     if msg.text == '/start':
         await state.set_state(menu_states.menu)
         await menu_handler(msg, state)
     else:
-        await msg.delete()
         await menu_message(msg)
         text = ("Buyurtma qaytadan boshlash uchun 🆕 Yangi buyurtma yaratish tugmasini bosing\n\n"
                 "Shuningdek, aksiyalarni ko'rishingiz va bizning filiallar bilan tanishishingiz mumkin\n\n"
@@ -55,4 +57,5 @@ async def main_menu_handler(msg: types.Message, state: FSMContext):
             menu_data['main_menu'].values(),
             [1, 2, 1, 2, 1]
         )
-        await msg.answer(text, ParseMode.HTML, reply_markup=markup)
+        await bot.edit_message_text(text, msg.chat.id, reply_markup=markup)
+        # await msg.answer(text, ParseMode.HTML, reply_markup=markup)
