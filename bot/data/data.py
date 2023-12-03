@@ -21,3 +21,15 @@ data = {
 orders_data = {
     'confirm_menu': ["❎ Yo'q", "✅ Ha"]
 }
+
+menu_data = {
+    'main_menu': {
+        "🍴 Menyu": 'menu',
+        "ℹ️ Biz haqimizda": 'about',
+        "🛍 Buyurtmalarim": 'orders',
+        "🏘 Filiallar": 'states',
+        "✍️ Fikr bildirish": 'write',
+        "⚙️ Sozlamalar": 'settings',
+        "🆕 Yangi buyurtma yaratish": 'new_order'
+    }
+}
