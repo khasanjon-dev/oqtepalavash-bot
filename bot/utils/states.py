@@ -11,6 +11,7 @@ class Register(StatesGroup):
 class Menu(StatesGroup):
     first_menu = State()
     menu = State()
+    main_menu = State()
 
 
 class Order(StatesGroup):
