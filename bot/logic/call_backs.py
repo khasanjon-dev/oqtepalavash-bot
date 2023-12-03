@@ -1,29 +1,40 @@
 from aiogram import Router, F, types
+from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-from bot.data import data
+from bot.data import data, orders_data
+from bot.logic.menu import menu_handler
 from bot.utils.inlinekeyboardbuilder import MenuCallBack
 from bot.utils.keyboardbuilder import keyboard_builder
-from bot.utils.states import order_states
+from bot.utils.locations import get_address
+from bot.utils.states import order_states, menu_states
 
 callback_router = Router(name='callback_data')
 order_router = Router(name='order_router')
 
 
+@order_router.message(order_states.confirm_location)
+async def confirm_location_handler(message: types.Message, state: FSMContext) -> None:
+    if message.text in orders_data['confirm_menu']:
+        await state.set_state(menu_states.menu)
+        await menu_handler(message, state)
+    else:
+        markup = keyboard_builder(orders_data['confirm_menu'], [2])
+        address = get_address(message.location.latitude, message.location.longitude)
+        text = f'Joylashuv qabul qilindi!\n<b>{address}</b>\nUshbu manzilni tasdiqlaysizmi?'
+        await message.answer(text, ParseMode.HTML, reply_markup=markup)
+
+
 @order_router.message(order_states.location)
 async def order_get_location(message: types.Message, state: FSMContext) -> None:
     if message.content_type == types.ContentType.LOCATION:
-        context = {
-            'longitude': message.location.longitude,
-            'latitude': message.location.latitude
-        }
-        data = await state.get_data()
-        await message.answer(f'Joylashuv qabul qilindi!\n{data}')
-
+        await state.set_state(order_states.confirm_location)
+        await confirm_location_handler(message, state)
     else:
-        text = f"{state.get_data()} uchun geo-joylashuvni jo'nating yoki manzilni tanlang"
+        data = await state.get_data()
+        text = f"{data['reception_type'][-1]} uchun geo-joylashuvni jo'nating yoki manzilni tanlang"
         builder = ReplyKeyboardBuilder()
         markup = builder.add(KeyboardButton(text='📍 Geo-joylashuvni yuborish', request_location=True))
         await message.answer(text, reply_markup=markup.as_markup(resize_keyboard=True))
@@ -33,7 +44,7 @@ async def order_get_location(message: types.Message, state: FSMContext) -> None:
 async def order_menu_handler(message: types.Message, state: FSMContext) -> None:
     if message.text in data['delivery_menu']:
         await state.set_state(order_states.location)
-        await state.update_data(reception_type=data['delivery_menu'].get(message.text, None))
+        await state.update_data(reception_type=[data['delivery_menu'].get(message.text, None), message.text])
         await order_get_location(message, state)
     else:
         markup = keyboard_builder(data['delivery_menu'].keys(), [2])
