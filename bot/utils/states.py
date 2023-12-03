@@ -16,6 +16,7 @@ class Menu(StatesGroup):
 class Order(StatesGroup):
     menu = State()
     location = State()
+    confirm_location = State()
 
 
 register_states = Register()
