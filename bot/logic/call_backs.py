@@ -19,10 +19,11 @@ async def order_get_location(message: types.Message, state: FSMContext) -> None:
             'longitude': message.location.longitude,
             'latitude': message.location.latitude
         }
-        await message.answer('Joylashuv qabul qilindi!')
+        data = await state.get_data()
+        await message.answer(f'Joylashuv qabul qilindi!\n{data}')
 
     else:
-        text = f"{message.text} uchun geo-joylashuvni jo'nating yoki manzilni tanlang"
+        text = f"{state.get_data()} uchun geo-joylashuvni jo'nating yoki manzilni tanlang"
         builder = ReplyKeyboardBuilder()
         markup = builder.add(KeyboardButton(text='📍 Geo-joylashuvni yuborish', request_location=True))
         await message.answer(text, reply_markup=markup.as_markup(resize_keyboard=True))
@@ -32,13 +33,15 @@ async def order_get_location(message: types.Message, state: FSMContext) -> None:
 async def order_menu_handler(message: types.Message, state: FSMContext) -> None:
     if message.text in data['delivery_menu']:
         await state.set_state(order_states.location)
+        await state.update_data(reception_type=data['delivery_menu'].get(message.text, None))
         await order_get_location(message, state)
     else:
-        markup = keyboard_builder(data['delivery_menu'], [2])
+        markup = keyboard_builder(data['delivery_menu'].keys(), [2])
         await message.answer('Buyurtma turini tanlang', reply_markup=markup)
 
 
 @callback_router.callback_query(MenuCallBack.filter(F.choice == 'order'))
 async def order_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(order_states.menu)
+    await state.update_data(order_menu=callback_query.data.split(':')[-1])
     await order_menu_handler(callback_query.message, state)
