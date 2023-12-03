@@ -18,13 +18,13 @@ class MenuCallBack(CallbackData, prefix="menu"):
     choice: Menu
 
 
-def inline_keyboard_builder(messages: list[str], call_backs: list[str], sizes: list | None = None):
+def inline_keyboard_builder(messages: list | tuple, call_backs: list[str], sizes: list | None = None):
     builder = InlineKeyboardBuilder()
-    for i in range(len(messages)):
+    for message, call_back in zip(messages, call_backs):
         builder.add(
             InlineKeyboardButton(
-                text=messages[i],
-                callback_data=MenuCallBack(choice=call_backs[i]).pack()
+                text=message,
+                callback_data=MenuCallBack(choice=call_back).pack()
             )
         )
     builder.adjust(*sizes)
