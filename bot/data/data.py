@@ -1,5 +1,9 @@
 data = {
-    'languages': ["🇺🇿 O'zbekcha", "🇷🇺 Русский", "🇺🇸 English"],
+    'languages': {
+        "🇺🇿 O'zbekcha": 'uz',
+        "🇷🇺 Русский": 'ru',
+        "🇺🇸 English": 'en'
+    },
     'cities': ["Tashkent", "Nukus", "Namangan", "Qo'qon", "Andijon", "Farg'ona", "Samarqand", "G'azalkent"],
     'menu': {
         "🛒 Buyurtma berish": 'order',
@@ -13,4 +17,7 @@ data = {
         '🛵 Eltib berish': 'delivery',
         '🚶‍♂️ Borib olish': 'pickup'
     },
+}
+orders_data = {
+    'confirm_menu': ["❎ Yo'q", "✅ Ha"]
 }
