@@ -1,10 +1,16 @@
 data = {
     'languages': ["🇺🇿 O'zbekcha", "🇷🇺 Русский", "🇺🇸 English"],
     'cities': ["Tashkent", "Nukus", "Namangan", "Qo'qon", "Andijon", "Farg'ona", "Samarqand", "G'azalkent"],
-    'menus': {
-        'texts': ["🛒 Buyurtma berish", "ℹ️ Biz haqimizda", "🛍 Buyurtmalarim", "🏘 Filiallar", "✍️ Fikr bildirish",
-                  "⚙️ Sozlamalar"],
-        'call_backs': ['order', 'about', 'orders', 'states', 'write', 'settings']
+    'menu': {
+        "🛒 Buyurtma berish": 'order',
+        "ℹ️ Biz haqimizda": 'about',
+        "🛍 Buyurtmalarim": 'orders',
+        "🏘 Filiallar": 'states',
+        "✍️ Fikr bildirish": 'write',
+        "⚙️ Sozlamalar": 'settings'
     },
-    'delivery_menu': ['🛵 Eltib berish', '🚶‍♂️ Borib olish'],
+    'delivery_menu': {
+        '🛵 Eltib berish': 'delivery',
+        '🚶‍♂️ Borib olish': 'pickup'
+    },
 }
