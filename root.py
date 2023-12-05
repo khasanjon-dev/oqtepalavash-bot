@@ -3,6 +3,7 @@ import logging
 import os
 from dataclasses import dataclass
 
+from aiogram import Bot
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -47,3 +48,4 @@ class Settings(Configuration):
 
 
 settings = Settings()
+bot = Bot(token=settings.bot.token)
