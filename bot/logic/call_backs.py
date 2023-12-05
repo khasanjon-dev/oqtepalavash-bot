@@ -10,6 +10,7 @@ from bot.utils.callback_class import MenuCallBack
 from bot.utils.keyboardbuilder import keyboard_builder
 from bot.utils.locations import get_address
 from bot.utils.states import order_states, menu_states
+from root import bot
 
 callback_router = Router(name='callback_data')
 order_router = Router(name='order_router')
@@ -54,5 +55,7 @@ async def order_menu_handler(message: types.Message, state: FSMContext) -> None:
 @callback_router.callback_query(MenuCallBack.filter(F.choice == 'order'))
 async def order_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(order_states.menu)
+    await bot.edit_message_text('Buyurtmani birga joylashtiramizmi? 🤗', callback_query.message.chat.id,
+                                callback_query.message.message_id)
     await state.update_data(order_menu=callback_query.data.split(':')[-1])
     await order_menu_handler(callback_query.message, state)
