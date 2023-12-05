@@ -38,9 +38,6 @@ async def menu_handler(message: types.Message, state: FSMContext) -> None:
         await message.answer(text, ParseMode.HTML, reply_markup=markup)
 
 
-chat_ids = {}
-
-
 @menu_router.message(menu_states.main_menu)
 async def main_menu_handler(msg: types.Message, state: FSMContext):
     if msg.text == '/start':
@@ -57,5 +54,4 @@ async def main_menu_handler(msg: types.Message, state: FSMContext):
             menu_data['main_menu'].values(),
             [1, 2, 1, 2, 1]
         )
-        await bot.edit_message_text(text, msg.chat.id, reply_markup=markup)
-        # await msg.answer(text, ParseMode.HTML, reply_markup=markup)
+        await msg.answer(text, ParseMode.HTML, reply_markup=markup)
